@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Caisse bijoux botanique</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --panel-2: #334155;
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --accent: #22c55e;
+      --accent-2: #38bdf8;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --border: rgba(255,255,255,0.08);
+      --shadow: 0 10px 25px rgba(0,0,0,0.25);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { min-height: 100vh; }
+
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px;
+      display: grid;
+      gap: 16px;
+      padding-bottom: 120px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 1.6rem; }
+    h2 { font-size: 1.15rem; margin-bottom: 12px; }
+    .muted { color: var(--muted); }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    @media (max-width: 820px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    label {
+      display: block;
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input, select, button, textarea {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 14px;
+      font-size: 1rem;
+    }
+
+    input, select, textarea { outline: none; }
+    button {
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform .05s ease, opacity .2s ease;
+    }
+    button:active { transform: scale(.98); }
+    .btn-primary { background: var(--accent); color: #06290f; border: none; }
+    .btn-secondary { background: var(--accent-2); color: #062335; border: none; }
+    .btn-danger { background: var(--danger); color: white; border: none; }
+    .btn-warning { background: var(--warning); color: #1f1300; border: none; }
+    .btn-ghost { background: transparent; border: 1px solid var(--border); }
+
+    .type-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 820px) {
+      .type-buttons { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+
+    .type-btn {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .type-btn.active, .payment-btn.active {
+      outline: 3px solid rgba(255,255,255,0.16);
+      background: var(--accent);
+      color: #06290f;
+      border: none;
+    }
+
+    .summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+    }
+
+    .price { font-size: 1.5rem; font-weight: 800; }
+
+    .cart-list, .history-list {
+      display: grid;
+      gap: 10px;
+      max-height: 300px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .item {
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 10px;
+    }
+
+    .item-title { font-weight: 700; }
+    .item-sub { font-size: .92rem; color: var(--muted); margin-top: 4px; }
+    .right { text-align: right; }
+
+    .sticky-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+      z-index: 50;
+    }
+
+    .sticky-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .sticky-inner { grid-template-columns: 1fr; }
+    }
+
+    .payment-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 8px;
+    }
+
+    .totals {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+    }
+
+    .kpi {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 820px) {
+      .kpi { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+
+    .kpi-card {
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+    }
+
+    .kpi-label { color: var(--muted); font-size: 0.9rem; }
+    .kpi-value { margin-top: 6px; font-size: 1.25rem; font-weight: 800; }
+
+
+    .type-buttons {
+      position: relative;
+      z-index: 10;
+    }
+
+    .type-btn {
+      position: relative;
+      z-index: 20;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      touch-action: manipulation;
+    }
+
+    .card, .grid {
+      pointer-events: auto;
+    }
+
+    @media (max-width: 768px) {
+      .grid-2 {
+        display: block;
+      }
+
+      .card {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+    }
+
+    .hidden { display: none !important; }
+    .small { font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card header">
+      <div>
+        <h1>Caisse bijoux botanique</h1>
+        <p class="muted">Version web simple pour iPad – stockage local</p>
+      </div>
+      <div style="min-width:260px; width:min(320px, 100%)">
+        <label for="vendeur">Prénom vendeur</label>
+        <input id="vendeur" placeholder="Ex. Willy" />
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Résumé du jour</h2>
+      <div class="kpi">
+        <div class="kpi-card"><div class="kpi-label">CA total</div><div class="kpi-value" id="kpi-total">0,00 €</div></div>
+        <div class="kpi-card"><div class="kpi-label">Espèces</div><div class="kpi-value" id="kpi-cash">0,00 €</div></div>
+        <div class="kpi-card"><div class="kpi-label">CB</div><div class="kpi-value" id="kpi-card">0,00 €</div></div>
+        <div class="kpi-card"><div class="kpi-label">Ventes</div><div class="kpi-value" id="kpi-count">0</div></div>
+      </div>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h2>Composer un bijou</h2>
+
+        <label>Type</label>
+          <div class="type-buttons" id="typeButtons">
+            <button type="button" data-type="pendentif" class="type-btn">Pendentif</button>
+            <button type="button" data-type="bague" class="type-btn">Bague</button>
+            <button type="button" data-type="boucles d'oreille" class="type-btn">Boucles</button>
+            <button type="button" data-type="bracelet" class="type-btn">Bracelet</button>
+          </div>
+
+        <div class="grid grid-2" style="margin-top: 12px;">
+          <div id="tailleWrap">
+            <label for="taille">Taille</label>
+            <select id="taille">
+              <option value="petit">petit</option>
+              <option value="moyen" selected>moyen</option>
+              <option value="grand">grand</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="couleur">Couleur</label>
+            <select id="couleur">
+              <option value="rouge" selected>rouge</option>
+              <option value="vert">vert</option>
+              <option value="bleu">bleu</option>
+              <option value="noir">noir</option>
+              <option value="blanc">blanc</option>
+              <option value="autre">autre</option>
+              <option value="transparent">transparent</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="forme">Forme</label>
+            <select id="forme">
+              <option value="cercle" selected>cercle</option>
+              <option value="carré">carré</option>
+              <option value="rectangle">rectangle</option>
+              <option value="goutte">goutte</option>
+              <option value="coeur">coeur</option>
+              <option value="ovale">ovale</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="plante">Plante</label>
+            <select id="plante">
+              <option value="Myosotis" selected>Myosotis</option>
+              <option value="Capillaire">Capillaire</option>
+              <option value="Carotte">Carotte</option>
+              <option value="Corbeille d'or">Corbeille d'or</option>
+              <option value="Autres">Autres</option>
+            </select>
+          </div>
+
+        <div class="summary" style="margin-top: 14px;">
+          <div>
+            <div class="item-title" id="apercu">Aucun bijou sélectionné</div>
+            <div class="item-sub">Le prix dépend du type, et de la taille pour les pendentifs.</div>
+          </div>
+          <div class="price" id="prixApercu">0,00 €</div>
+        </div>
+
+        <div class="grid" style="margin-top: 14px;">
+          <button class="btn-primary" id="addToCart">Ajouter au panier</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Panier</h2>
+        <div class="cart-list" id="cartList"></div>
+        <div class="summary" style="margin-top: 12px;">
+          <div>
+            <div class="item-title">Total panier</div>
+            <div class="item-sub" id="cartCount">0 article</div>
+          </div>
+          <div class="price" id="cartTotal">0,00 €</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="header" style="margin-bottom: 12px;">
+        <h2>Historique du jour</h2>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn-secondary" id="exportCsv">Exporter CSV</button>
+          <button class="btn-warning" id="clearDay">Vider les ventes du jour</button>
+        </div>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+  </div>
+
+  <div class="sticky-bar">
+    <div class="sticky-inner">
+      <div class="totals">
+        <div>
+          <div class="small muted">Paiement</div>
+          <div class="payment-row" id="paymentButtons"></div>
+        </div>
+      </div>
+      <div class="totals">
+        <div>
+          <div class="small muted">Payé par le client</div>
+          <input id="montantPaye" inputmode="decimal" placeholder="0,00" style="margin-top:6px;" />
+        </div>
+        <div class="right">
+          <div class="small muted">Rendu</div>
+          <div class="price" id="rendu">0,00 €</div>
+        </div>
+      </div>
+      <button class="btn-primary" id="checkout" style="height:100%; min-height:72px; font-size:1.1rem;">Valider la vente</button>
+    </div>
+  </div>
+
+  <script>
+    const TARIFS = {
+      pendentif: { petit: 12, moyen: 15, grand: 18 },
+      bague: 10,
+      "boucles d'oreille": 14,
+      bracelet: 16,
+    };
+
+    const OPTIONS = {
+      types: ["pendentif", "bague", "boucles d'oreille", "bracelet"],
+      tailles: ["petit", "moyen", "grand"],
+      couleurs: ["rouge", "vert", "bleu", "noir", "blanc", "autre", "transparent"],
+      formes: ["cercle", "carré", "rectangle", "goutte", "coeur", "ovale"],
+      plantes: ["Myosotis", "Capillaire", "Carotte", "Corbeille d'or", "Autres"],
+      paiements: ["Espèces", "CB", "Autre"]
+    };
+
+    const STORAGE_KEY = "caisse_bijoux_ipad_v1";
+
+    const state = {
+      vendeur: "",
+      type: "pendentif",
+      taille: "moyen",
+      couleur: "rouge",
+      forme: "cercle",
+      plante: "Myosotis",
+      paiement: "CB",
+      cart: [],
+      ventes: loadSales(),
+    };
+
+    function selectType(type, el) {
+      state.type = type;
+
+      document.querySelectorAll(".type-btn").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      if (el) {
+        el.classList.add("active");
+      }
+
+      renderComposer();
+    }
+
+    const els = {
+      vendeur: document.getElementById("vendeur"),
+      typeButtons: document.getElementById("typeButtons"),
+      tailleWrap: document.getElementById("tailleWrap"),
+      taille: document.getElementById("taille"),
+      couleur: document.getElementById("couleur"),
+      forme: document.getElementById("forme"),
+      plante: document.getElementById("plante"),
+      apercu: document.getElementById("apercu"),
+      prixApercu: document.getElementById("prixApercu"),
+      cartList: document.getElementById("cartList"),
+      cartTotal: document.getElementById("cartTotal"),
+      cartCount: document.getElementById("cartCount"),
+      paymentButtons: document.getElementById("paymentButtons"),
+      montantPaye: document.getElementById("montantPaye"),
+      rendu: document.getElementById("rendu"),
+      checkout: document.getElementById("checkout"),
+      addToCart: document.getElementById("addToCart"),
+      historyList: document.getElementById("historyList"),
+      exportCsv: document.getElementById("exportCsv"),
+      clearDay: document.getElementById("clearDay"),
+      kpiTotal: document.getElementById("kpi-total"),
+      kpiCash: document.getElementById("kpi-cash"),
+      kpiCard: document.getElementById("kpi-card"),
+      kpiCount: document.getElementById("kpi-count"),
+    };
+
+    function money(n) {
+      return new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(Number(n || 0));
+    }
+
+    function loadSales() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      } catch {
+        return [];
+      }
+    }
+
+    function saveSales() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.ventes));
+    }
+
+    function todayKey() {
+      const d = new Date();
+      return d.toISOString().slice(0, 10);
+    }
+
+    function currentPrice() {
+      if (state.type === "pendentif") return TARIFS.pendentif[state.taille] || 0;
+      return TARIFS[state.type] || 0;
+    }
+
+    function currentItemLabel() {
+      return `${state.type} | ${state.taille} | ${state.couleur} | ${state.forme} | ${state.plante}`;
+    }
+
+    function cartTotal() {
+      return state.cart.reduce((sum, item) => sum + Number(item.prix || 0), 0);
+    }
+
+    function resetCart() {
+      state.cart = [];
+      els.montantPaye.value = "";
+      renderCart();
+      renderPayment();
+    }
+
+    function buildSelect(select, values, current) {
+      select.innerHTML = "";
+      values.forEach(v => {
+        const option = document.createElement("option");
+        option.value = v;
+        option.textContent = v;
+        if (v === current) option.selected = true;
+        select.appendChild(option);
+      });
+    }
+
+    function renderTypeButtons() {
+      document.querySelectorAll("#typeButtons .type-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.type === state.type);
+      });
+    }
+
+    function renderPaymentButtons() {
+      els.paymentButtons.innerHTML = "";
+      OPTIONS.paiements.forEach(mode => {
+        const btn = document.createElement("button");
+        btn.className = `payment-btn btn-ghost ${state.paiement === mode ? "active" : ""}`;
+        btn.textContent = mode;
+        btn.onclick = () => {
+          state.paiement = mode;
+          renderPaymentButtons();
+          renderPayment();
+        };
+        els.paymentButtons.appendChild(btn);
+      });
+    }
+
+    function renderComposer() {
+      renderTypeButtons();
+      els.tailleWrap.classList.toggle("hidden", state.type !== "pendentif");
+      els.taille.value = state.taille;
+      els.couleur.value = state.couleur;
+      els.forme.value = state.forme;
+      els.plante.value = state.plante;
+      els.apercu.textContent = currentItemLabel();
+      els.prixApercu.textContent = money(currentPrice());
+    }
+
+    function renderCart() {
+      els.cartList.innerHTML = "";
+      if (!state.cart.length) {
+        const empty = document.createElement("div");
+        empty.className = "item-sub";
+        empty.textContent = "Panier vide";
+        els.cartList.appendChild(empty);
+      }
+      state.cart.forEach((item, index) => {
+        const row = document.createElement("div");
+        row.className = "item";
+        row.innerHTML = `
+          <div>
+            <div class="item-title">${item.article}</div>
+            <div class="item-sub">${item.paiement ? `Paiement: ${item.paiement}` : "En attente de paiement"}</div>
+          </div>
+          <div class="right">
+            <div class="item-title">${money(item.prix)}</div>
+            <button class="btn-danger" style="margin-top:8px; padding:10px 12px; width:auto;" data-remove="${index}">Supprimer</button>
+          </div>
+        `;
+        els.cartList.appendChild(row);
+      });
+      els.cartList.querySelectorAll("[data-remove]").forEach(btn => {
+        btn.onclick = () => {
+          const idx = Number(btn.dataset.remove);
+          state.cart.splice(idx, 1);
+          renderCart();
+          renderPayment();
+        };
+      });
+      els.cartTotal.textContent = money(cartTotal());
+      els.cartCount.textContent = `${state.cart.length} article${state.cart.length > 1 ? "s" : ""}`;
+    }
+
+    function renderPayment() {
+      const total = cartTotal();
+      const paid = Number(String(els.montantPaye.value || "0").replace(",", ".")) || 0;
+      if (state.paiement === "Espèces") {
+        els.montantPaye.disabled = false;
+        els.rendu.textContent = money(Math.max(0, paid - total));
+      } else {
+        els.montantPaye.disabled = true;
+        els.rendu.textContent = money(0);
+      }
+    }
+
+    function salesToday() {
+      return state.ventes.filter(v => (v.datetime || "").slice(0, 10) === todayKey());
+    }
+
+    function renderHistory() {
+      const ventes = salesToday().sort((a, b) => (b.datetime || "").localeCompare(a.datetime || ""));
+      els.historyList.innerHTML = "";
+      if (!ventes.length) {
+        const empty = document.createElement("div");
+        empty.className = "item-sub";
+        empty.textContent = "Aucune vente aujourd'hui";
+        els.historyList.appendChild(empty);
+      }
+      ventes.forEach((vente, index) => {
+        const row = document.createElement("div");
+        row.className = "item";
+        row.innerHTML = `
+          <div>
+            <div class="item-title">#${vente.panier} · ${vente.article}</div>
+            <div class="item-sub">${vente.datetime} · ${vente.paiement} · ${vente.prenom || "Sans vendeur"}</div>
+          </div>
+          <div class="right">
+            <div class="item-title">${money(vente.prix_total)}</div>
+            <button class="btn-danger" style="margin-top:8px; padding:10px 12px; width:auto;" data-delete-sale="${index}">Supprimer</button>
+          </div>
+        `;
+        els.historyList.appendChild(row);
+      });
+
+      const todaySales = salesToday();
+      els.historyList.querySelectorAll("[data-delete-sale]").forEach(btn => {
+        btn.onclick = () => {
+          const idx = Number(btn.dataset.deleteSale);
+          const vente = ventes[idx];
+          state.ventes = state.ventes.filter(v => !(v.datetime === vente.datetime && v.panier === vente.panier && v.article === vente.article));
+          saveSales();
+          renderHistory();
+          renderKPIs();
+        };
+      });
+    }
+
+    function renderKPIs() {
+      const ventes = salesToday();
+      const total = ventes.reduce((s, v) => s + Number(v.prix_total || 0), 0);
+      const cash = ventes.filter(v => v.paiement === "Espèces").reduce((s, v) => s + Number(v.prix_total || 0), 0);
+      const card = ventes.filter(v => v.paiement === "CB").reduce((s, v) => s + Number(v.prix_total || 0), 0);
+      els.kpiTotal.textContent = money(total);
+      els.kpiCash.textContent = money(cash);
+      els.kpiCard.textContent = money(card);
+      els.kpiCount.textContent = String(ventes.length);
+    }
+
+    function nextPanierNumber() {
+      const ventes = salesToday();
+      if (!ventes.length) return 1;
+      return Math.max(...ventes.map(v => Number(v.panier || 0))) + 1;
+    }
+
+    function checkout() {
+      if (!state.cart.length) {
+        alert("Le panier est vide.");
+        return;
+      }
+      if (!els.vendeur.value.trim()) {
+        alert("Entre le prénom du vendeur.");
+        els.vendeur.focus();
+        return;
+      }
+
+      const total = cartTotal();
+      const paid = Number(String(els.montantPaye.value || "0").replace(",", ".")) || 0;
+      if (state.paiement === "Espèces" && paid < total) {
+        alert("Le montant payé est insuffisant.");
+        return;
+      }
+
+      const panier = nextPanierNumber();
+      const now = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+      state.cart.forEach(item => {
+        state.ventes.push({
+          datetime: now,
+          prenom: els.vendeur.value.trim(),
+          panier,
+          code: item.code,
+          article: item.article,
+          type_bijou: item.type_bijou,
+          taille: item.taille,
+          couleur: item.couleur,
+          forme: item.forme,
+          plante: item.plante,
+          quantitee: 1,
+          prix_unitaire: item.prix,
+          prix_total: item.prix,
+          paiement: state.paiement,
+          remise: 0
+        });
+      });
+
+      saveSales();
+      resetCart();
+      renderHistory();
+      renderKPIs();
+      alert(`Vente #${panier} enregistrée.`);
+    }
+
+    function exportCSV() {
+      const cols = [
+        "datetime","prenom","panier","code","article","type_bijou","taille","couleur","forme","plante","quantitee","prix_unitaire","prix_total","paiement","remise"
+      ];
+      const rows = [cols.join(",")];
+      state.ventes.forEach(v => {
+        const line = cols.map(c => {
+          const value = String(v[c] ?? "").replaceAll('"', '""');
+          return `"${value}"`;
+        }).join(",");
+        rows.push(line);
+      });
+      const blob = new Blob([rows.join("\n")], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ventes_${todayKey()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function clearToday() {
+      if (!confirm("Supprimer toutes les ventes du jour ?")) return;
+      state.ventes = state.ventes.filter(v => (v.datetime || "").slice(0, 10) !== todayKey());
+      saveSales();
+      renderHistory();
+      renderKPIs();
+    }
+
+    function addCurrentToCart() {
+      const prix = currentPrice();
+      const code = `${state.type.slice(0,3)}-${state.taille.slice(0,2)}-${state.couleur.slice(0,2)}-${state.forme.slice(0,2)}-${state.plante.slice(0,3)}`.toUpperCase().replaceAll(" ", "");
+      state.cart.push({
+        code,
+        article: currentItemLabel(),
+        type_bijou: state.type,
+        taille: state.taille,
+        couleur: state.couleur,
+        forme: state.forme,
+        plante: state.plante,
+        prix
+      });
+      renderCart();
+      renderPayment();
+    }
+
+    els.taille.onchange = e => { state.taille = e.target.value; renderComposer(); };
+    els.couleur.onchange = e => { state.couleur = e.target.value; renderComposer(); };
+    els.forme.onchange = e => { state.forme = e.target.value; renderComposer(); };
+    els.plante.onchange = e => { state.plante = e.target.value; renderComposer(); };
+    els.addToCart.onclick = addCurrentToCart;
+    els.checkout.onclick = checkout;
+    els.exportCsv.onclick = exportCSV;
+    els.clearDay.onclick = clearToday;
+    els.montantPaye.oninput = renderPayment;
+    els.vendeur.value = state.vendeur;
+    els.vendeur.oninput = e => { state.vendeur = e.target.value; };
+
+    document.getElementById("typeButtons").addEventListener("pointerdown", function(e) {
+      const btn = e.target.closest(".type-btn");
+      if (!btn) return;
+      e.preventDefault();
+      selectType(btn.dataset.type, btn);
+    });
+
+    renderComposer();
+    renderCart();
+    renderPaymentButtons();
+    renderPayment();
+    renderHistory();
+    renderKPIs();
+  </script>
+</body>
+</html>
