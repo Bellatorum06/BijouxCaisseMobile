@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Caisse bijoux botanique</title>
+  <title>Caisse Bijoux</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -250,9 +250,164 @@
       }
     }
 
+
+    .section {
+      margin-top: 14px;
+    }
+
+    .section h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+      color: var(--muted);
+    }
+
+    .options {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:flex-start;
+    }
+
+    .choice input {
+      display:none;
+    }
+
+    .choice label {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:46px;
+      min-width:46px;
+      border:2px solid var(--border);
+      border-radius:14px;
+      background: var(--panel-2);
+      padding:8px 10px;
+      cursor:pointer;
+      user-select:none;
+      transition:.18s ease;
+      font-weight:700;
+      text-align:center;
+      color: var(--text);
+      width:auto;
+    }
+
+    .choice label:hover{
+      transform:translateY(-1px);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .choice input:checked + label{
+      border-color: var(--accent);
+      box-shadow:0 0 0 4px rgba(34,197,94,.18);
+      background: rgba(34,197,94,.12);
+    }
+
+    .swatch{
+      width:22px;
+      height:22px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      flex:0 0 auto;
+    }
+
+    .shape{
+      width:24px;
+      height:24px;
+      border:2px solid var(--text);
+      display:inline-block;
+      flex:0 0 auto;
+    }
+
+    .circle{ border-radius:999px; }
+    .square{ border-radius:4px; }
+    .rectangle{ width:30px; height:18px; border-radius:4px; }
+    .drop{
+      width:22px;
+      height:22px;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+    }
+    .heart{
+      position: relative;
+      width: 24px;
+      height: 22px;
+      border: none;
+    }
+    .heart:before,
+    .heart:after{
+      content:""; position:absolute; left:12px; top:0;
+      width:12px; height:20px; background:var(--text);
+      border-radius:12px 12px 0 0; transform:rotate(-45deg);
+      transform-origin:0 100%;
+    }
+    .heart:after{
+      left:0; transform:rotate(45deg); transform-origin:100% 100%;
+    }
+    .oval{ width:30px; height:20px; border-radius:999px; }
+
+    .size-chip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:2px solid var(--text);
+      border-radius:999px;
+      flex:0 0 auto;
+    }
+    .size-small{ width:12px; height:12px; }
+    .size-medium{ width:18px; height:18px; }
+    .size-large{ width:26px; height:26px; }
+
+
+
+    .choice.compact label {
+      min-width: 46px;
+      padding: 8px;
+    }
+
+    .choice.color-only label {
+      min-width: 46px;
+      padding: 8px;
+      font-size: 0;
+    }
+
+    .choice.size-only label {
+      min-width: 52px;
+      padding: 8px 10px;
+    }
+
+    .choice.type-compact label {
+      min-width: 64px;
+      padding: 8px 10px;
+      font-size: 0.92rem;
+    }
+
+    .swatch {
+      width: 24px;
+      height: 24px;
+      margin: 0;
+    }
+
+    .size-text {
+      font-size: 1rem;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .choice.plant-compact label {
+      min-width: 78px;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+    }
+
     .hidden { display: none !important; }
     .small { font-size: .9rem; }
   </style>
+
+  <meta name="theme-color" content="#22c55e" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+
 </head>
 <body>
   <div class="app">
@@ -281,59 +436,137 @@
       <div class="card">
         <h2>Composer un bijou</h2>
 
-        <label>Type</label>
-          <div class="type-buttons" id="typeButtons">
-            <button type="button" data-type="pendentif" class="type-btn">Pendentif</button>
-            <button type="button" data-type="bague" class="type-btn">Bague</button>
-            <button type="button" data-type="boucles d'oreille" class="type-btn">Boucles</button>
-            <button type="button" data-type="bracelet" class="type-btn">Bracelet</button>
+        <div class="section">
+          <h3>Type</h3>
+          <div class="options" id="typeButtons">
+            <div class="choice">
+              <input type="radio" id="type-pendentif" name="type" value="pendentif" checked>
+              <label for="type-pendentif">Pendentif</label>
+            </div>
+            <div class="choice">
+              <input type="radio" id="type-bague" name="type" value="bague">
+              <label for="type-bague">Bague</label>
+            </div>
+            <div class="choice">
+              <input type="radio" id="type-boucles" name="type" value="boucles d'oreille">
+              <label for="type-boucles">Boucles</label>
+            </div>
+            <div class="choice">
+              <input type="radio" id="type-bracelet" name="type" value="bracelet">
+              <label for="type-bracelet">Bracelet</label>
+            </div>
           </div>
+        </div>
 
         <div class="grid grid-2" style="margin-top: 12px;">
-          <div id="tailleWrap">
-            <label for="taille">Taille</label>
-            <select id="taille">
-              <option value="petit">petit</option>
-              <option value="moyen" selected>moyen</option>
-              <option value="grand">grand</option>
-            </select>
+          <div id="tailleWrap" class="section">
+            <h3>Taille</h3>
+            <div class="options">
+              <div class="choice size-only">
+                <input type="radio" id="taille-petit" name="taille" value="petit">
+                <label for="taille-petit"><span class="size-text">S</span></label>
+              </div>
+              <div class="choice size-only">
+                <input type="radio" id="taille-moyen" name="taille" value="moyen" checked>
+                <label for="taille-moyen"><span class="size-text">M</span></label>
+              </div>
+              <div class="choice size-only">
+                <input type="radio" id="taille-grand" name="taille" value="grand">
+                <label for="taille-grand"><span class="size-text">L</span></label>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label for="couleur">Couleur</label>
-            <select id="couleur">
-              <option value="rouge" selected>rouge</option>
-              <option value="vert">vert</option>
-              <option value="bleu">bleu</option>
-              <option value="noir">noir</option>
-              <option value="blanc">blanc</option>
-              <option value="autre">autre</option>
-              <option value="transparent">transparent</option>
-            </select>
+          <div class="section">
+            <h3>Couleur</h3>
+            <div class="options">
+              <div class="choice color-only">
+                <input type="radio" id="couleur-rouge" name="couleur" value="rouge" checked>
+                <label for="couleur-rouge" aria-label="Rouge"><span class="swatch" style="background:#d94141;"></span></label>
+              </div>
+              <div class="choice color-only">
+                <input type="radio" id="couleur-vert" name="couleur" value="vert">
+                <label for="couleur-vert" aria-label="Vert"><span class="swatch" style="background:#3f9b5f;"></span></label>
+              </div>
+              <div class="choice color-only">
+                <input type="radio" id="couleur-bleu" name="couleur" value="bleu">
+                <label for="couleur-bleu" aria-label="Bleu"><span class="swatch" style="background:#3f73d8;"></span></label>
+              </div>
+              <div class="choice color-only">
+                <input type="radio" id="couleur-noir" name="couleur" value="noir">
+                <label for="couleur-noir" aria-label="Noir"><span class="swatch" style="background:#1f1f1f;"></span></label>
+              </div>
+              <div class="choice color-only">
+                <input type="radio" id="couleur-blanc" name="couleur" value="blanc">
+                <label for="couleur-blanc" aria-label="Blanc"><span class="swatch" style="background:#f5f5f5;"></span></label>
+              </div>
+              <div class="choice color-only">
+                <input type="radio" id="couleur-transparent" name="couleur" value="transparent">
+                <label for="couleur-transparent" aria-label="Transparent"><span class="swatch" style="background:linear-gradient(135deg,#ffffff,#9ca3af);"></span></label>
+              </div>
+              <div class="choice color-only">
+                <input type="radio" id="couleur-autre" name="couleur" value="autre">
+                <label for="couleur-autre" aria-label="Autre"><span class="swatch" style="background:linear-gradient(135deg,#f59e0b,#ec4899,#8b5cf6);"></span></label>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label for="forme">Forme</label>
-            <select id="forme">
-              <option value="cercle" selected>cercle</option>
-              <option value="carré">carré</option>
-              <option value="rectangle">rectangle</option>
-              <option value="goutte">goutte</option>
-              <option value="coeur">coeur</option>
-              <option value="ovale">ovale</option>
-            </select>
+          <div class="section">
+            <h3>Forme</h3>
+            <div class="options">
+              <div class="choice">
+                <input type="radio" id="forme-cercle" name="forme" value="cercle" checked>
+                <label for="forme-cercle"><span class="shape circle"></span>Cercle</label>
+              </div>
+              <div class="choice">
+                <input type="radio" id="forme-carre" name="forme" value="carré">
+                <label for="forme-carre"><span class="shape square"></span>Carré</label>
+              </div>
+              <div class="choice">
+                <input type="radio" id="forme-rectangle" name="forme" value="rectangle">
+                <label for="forme-rectangle"><span class="shape rectangle"></span>Rectangle</label>
+              </div>
+              <div class="choice">
+                <input type="radio" id="forme-goutte" name="forme" value="goutte">
+                <label for="forme-goutte"><span class="shape drop"></span>Goutte</label>
+              </div>
+              <div class="choice">
+                <input type="radio" id="forme-coeur" name="forme" value="coeur">
+                <label for="forme-coeur"><span class="shape heart"></span>Coeur</label>
+              </div>
+              <div class="choice">
+                <input type="radio" id="forme-ovale" name="forme" value="ovale">
+                <label for="forme-ovale"><span class="shape oval"></span>Ovale</label>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label for="plante">Plante</label>
-            <select id="plante">
-              <option value="Myosotis" selected>Myosotis</option>
-              <option value="Capillaire">Capillaire</option>
-              <option value="Carotte">Carotte</option>
-              <option value="Corbeille d'or">Corbeille d'or</option>
-              <option value="Autres">Autres</option>
-            </select>
+          <div class="section">
+            <h3>Plante</h3>
+            <div class="options">
+              <div class="choice plant-compact">
+                <input type="radio" id="plante-myosotis" name="plante" value="Myosotis" checked>
+                <label for="plante-myosotis">Myosotis</label>
+              </div>
+              <div class="choice plant-compact">
+                <input type="radio" id="plante-capillaire" name="plante" value="Capillaire">
+                <label for="plante-capillaire">Capillaire</label>
+              </div>
+              <div class="choice plant-compact">
+                <input type="radio" id="plante-carotte" name="plante" value="Carotte">
+                <label for="plante-carotte">Carotte</label>
+              </div>
+              <div class="choice plant-compact">
+                <input type="radio" id="plante-corbeille" name="plante" value="Corbeille d'or">
+                <label for="plante-corbeille">Corbeille d'or</label>
+              </div>
+              <div class="choice plant-compact">
+                <input type="radio" id="plante-autres" name="plante" value="Autres">
+                <label for="plante-autres">Autres</label>
+              </div>
+            </div>
           </div>
+        </div>
 
         <div class="summary" style="margin-top: 14px;">
           <div>
@@ -344,7 +577,19 @@
         </div>
 
         <div class="grid" style="margin-top: 14px;">
-          <button class="btn-primary" id="addToCart">Ajouter au panier</button>
+          <button type="button" class="btn-primary" id="addToCart">Ajouter au panier</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Panier</h2>
+        <div class="cart-list" id="cartList"></div>
+        <div class="summary" style="margin-top: 12px;">
+          <div>
+            <div class="item-title">Total panier</div>
+            <div class="item-sub" id="cartCount">0 article</div>
+          </div>
+          <div class="price" id="cartTotal">0,00 €</div>
         </div>
       </div>
 
@@ -426,28 +671,16 @@
       ventes: loadSales(),
     };
 
-    function selectType(type, el) {
-      state.type = type;
-
-      document.querySelectorAll(".type-btn").forEach(btn => {
-        btn.classList.remove("active");
-      });
-
-      if (el) {
-        el.classList.add("active");
-      }
-
-      renderComposer();
-    }
+    
 
     const els = {
       vendeur: document.getElementById("vendeur"),
       typeButtons: document.getElementById("typeButtons"),
       tailleWrap: document.getElementById("tailleWrap"),
-      taille: document.getElementById("taille"),
-      couleur: document.getElementById("couleur"),
-      forme: document.getElementById("forme"),
-      plante: document.getElementById("plante"),
+      taille: null,
+      couleur: null,
+      forme: null,
+      plante: null,
       apercu: document.getElementById("apercu"),
       prixApercu: document.getElementById("prixApercu"),
       cartList: document.getElementById("cartList"),
@@ -508,21 +741,18 @@
       renderPayment();
     }
 
-    function buildSelect(select, values, current) {
-      select.innerHTML = "";
-      values.forEach(v => {
-        const option = document.createElement("option");
-        option.value = v;
-        option.textContent = v;
-        if (v === current) option.selected = true;
-        select.appendChild(option);
-      });
-    }
+    
 
-    function renderTypeButtons() {
-      document.querySelectorAll("#typeButtons .type-btn").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.type === state.type);
-      });
+    
+
+
+    function syncStateFromInputs() {
+      const getChecked = (name) => document.querySelector(`input[name="${name}"]:checked`)?.value || "";
+      state.type = getChecked("type") || state.type;
+      state.taille = getChecked("taille") || state.taille;
+      state.couleur = getChecked("couleur") || state.couleur;
+      state.forme = getChecked("forme") || state.forme;
+      state.plante = getChecked("plante") || state.plante;
     }
 
     function renderPaymentButtons() {
@@ -541,12 +771,8 @@
     }
 
     function renderComposer() {
-      renderTypeButtons();
+      syncStateFromInputs();
       els.tailleWrap.classList.toggle("hidden", state.type !== "pendentif");
-      els.taille.value = state.taille;
-      els.couleur.value = state.couleur;
-      els.forme.value = state.forme;
-      els.plante.value = state.plante;
       els.apercu.textContent = currentItemLabel();
       els.prixApercu.textContent = money(currentPrice());
     }
@@ -735,6 +961,7 @@
     }
 
     function addCurrentToCart() {
+      syncStateFromInputs();
       const prix = currentPrice();
       const code = `${state.type.slice(0,3)}-${state.taille.slice(0,2)}-${state.couleur.slice(0,2)}-${state.forme.slice(0,2)}-${state.plante.slice(0,3)}`.toUpperCase().replaceAll(" ", "");
       state.cart.push({
@@ -751,10 +978,42 @@
       renderPayment();
     }
 
-    els.taille.onchange = e => { state.taille = e.target.value; renderComposer(); };
-    els.couleur.onchange = e => { state.couleur = e.target.value; renderComposer(); };
-    els.forme.onchange = e => { state.forme = e.target.value; renderComposer(); };
-    els.plante.onchange = e => { state.plante = e.target.value; renderComposer(); };
+    document.querySelectorAll('input[name="type"]').forEach(input => {
+      input.addEventListener("change", () => {
+        state.type = input.value;
+        syncStateFromInputs();
+    renderComposer();
+      });
+    });
+
+    document.querySelectorAll('input[name="taille"]').forEach(input => {
+      input.addEventListener("change", () => {
+        state.taille = input.value;
+        renderComposer();
+      });
+    });
+
+    document.querySelectorAll('input[name="couleur"]').forEach(input => {
+      input.addEventListener("change", () => {
+        state.couleur = input.value;
+        renderComposer();
+      });
+    });
+
+    document.querySelectorAll('input[name="forme"]').forEach(input => {
+      input.addEventListener("change", () => {
+        state.forme = input.value;
+        renderComposer();
+      });
+    });
+
+    document.querySelectorAll('input[name="plante"]').forEach(input => {
+      input.addEventListener("change", () => {
+        state.plante = input.value;
+        renderComposer();
+      });
+    });
+
     els.addToCart.onclick = addCurrentToCart;
     els.checkout.onclick = checkout;
     els.exportCsv.onclick = exportCSV;
@@ -763,13 +1022,6 @@
     els.vendeur.value = state.vendeur;
     els.vendeur.oninput = e => { state.vendeur = e.target.value; };
 
-    document.getElementById("typeButtons").addEventListener("pointerdown", function(e) {
-      const btn = e.target.closest(".type-btn");
-      if (!btn) return;
-      e.preventDefault();
-      selectType(btn.dataset.type, btn);
-    });
-
     renderComposer();
     renderCart();
     renderPaymentButtons();
@@ -777,5 +1029,16 @@
     renderHistory();
     renderKPIs();
   </script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./service-worker.js").catch(err => {
+          console.log("Service worker non enregistré :", err);
+        });
+      });
+    }
+  </script>
+
 </body>
 </html>
